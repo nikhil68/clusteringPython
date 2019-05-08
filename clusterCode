@@ -1,0 +1,40 @@
+import pandas as pd
+dataa = pd.read_csv("D:\\niks\\winequality-white.csv")
+dataa.head()
+
+
+import pandas as pd
+myfile = pd.read_csv("D:\\niks\\winequality-white.csv")
+
+from sklearn.preprocessing import scale
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+#now we will make columns by splitting the initial dataset using ;
+import matplotlib.pyplot as plt
+import numpy as np
+%matplotlib inline
+wine = pd.read_csv("D:\\niks\\winequality-white.csv",sep=";")
+
+#we standardize/scale data and then covert the resultant matrix into a dataframe
+
+wine_std = pd.DataFrame(scale(wine),columns = list(wine.columns))
+
+clusterRange = [2,3,4,5,6,7,8,9]
+
+for k in clusterRange:   #we'll take a range of k values for kmeans
+    kmeans = KMeans(n_clusters=k)
+    kmeans.fit(wine_std)
+    #we ll print silhoute score correspnding to each k value
+    print(k,silhouette_score(wine_std,kmeans.labels_))
+    #greater silhoute score means the data point belongs strongly in its cluster.
+    
+    
+#we saw that for k = 3 silhoutte is highest
+k = 3
+kmeans = KMeans(n_clusters=k)
+kmeans.fit(wine_std)
+
+labels = kmeans.labels_
+wine["cluster"]=labels
+wine["cluster"].value_counts()  #no. of values  in each cluster
